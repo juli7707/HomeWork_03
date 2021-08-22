@@ -19,9 +19,9 @@ class SampleInteractor(
      */
     fun task1(): Flow<String> {
         return sampleRepository.produceNumbers()
-            .map { it*5 }
+            .map { it * 5 }
             .filter { it > 20 }
-            .filterNot { it%2 == 0 }
+            .filterNot { it % 2 == 0 }
             .map { "$it won" }
             .take(3)
     }
@@ -38,9 +38,9 @@ class SampleInteractor(
             .transform {
                 emit(it.toString())
                 when {
-                    it%15 == 0 -> emit("FizzBuzz")
-                    it%5 == 0 -> emit("Buzz")
-                    it%3 == 0 -> emit("Fizz")
+                    it % 15 == 0 -> emit("FizzBuzz")
+                    it % 5 == 0 -> emit("Buzz")
+                    it % 3 == 0 -> emit("Fizz")
                 }
             }
     }
@@ -66,12 +66,13 @@ class SampleInteractor(
     fun task4(): Flow<Int> {
         return sampleRepository.produceNumbers()
             .catch { exception ->
-                sampleRepository.completed()
                 when (exception) {
                     is IllegalArgumentException -> emit(-1)
                     else -> throw exception
                 }
             }
-
+            .onCompletion {
+                sampleRepository.completed()
+            }
     }
 }
